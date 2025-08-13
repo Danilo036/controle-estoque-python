@@ -38,13 +38,6 @@ Este é um sistema simples de controle de estoque desenvolvido em Python, utiliz
 
 ---
 
-## Como contribuir
-
-Contribuições são bem-vindas!  
-Abra uma issue para sugestões ou envie um pull request com melhorias.
-
----
-
 ## Autor
 
 Danilo Ribeiro Cunha
