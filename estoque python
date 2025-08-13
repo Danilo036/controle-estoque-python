@@ -1,0 +1,96 @@
+import os
+
+class Produto:
+    def __init__(self, nome, quantidade):
+        self.nome = nome
+        self.quantidade = quantidade
+
+    def vender(self, qtd_vendida):
+        if qtd_vendida <= self.quantidade:
+            self.quantidade -= qtd_vendida
+            return True
+        else:
+            return False
+
+    def __str__(self):
+        return f"Produto: {self.nome} — Estoque: {self.quantidade}"
+
+
+def carregar_estoque():
+    produtos = []
+    if os.path.exists("estoque.txt"):
+        with open("estoque.txt", "r") as arquivo:
+            for linha in arquivo:
+                nome, qtd = linha.strip().split(",")
+                produtos.append(Produto(nome, int(qtd)))
+    return produtos
+
+
+def salvar_estoque(produtos):
+    with open("estoque.txt", "w") as arquivo:
+        for produto in produtos:
+            arquivo.write(f"{produto.nome},{produto.quantidade}\n")
+
+
+def cadastrar_produtos(produtos):
+    n = int(input("Quantos produtos serão cadastrados? "))
+    for i in range(n):
+        nome = input(f"Nome do produto {i+1}: ")
+        qtd = int(input(f"Quantidade em estoque de '{nome}': "))
+        produtos.append(Produto(nome, qtd))
+    salvar_estoque(produtos)
+
+
+def registrar_vendas(produtos):
+    n = int(input("\nQuantas vendas serão registradas? "))
+    for i in range(n):
+        nome_vendido = input(f"\nNome do produto vendido na venda {i+1}: ")
+        for produto in produtos:
+            if produto.nome == nome_vendido:
+                qtd_vendida = int(input(f"Quantidade vendida de '{nome_vendido}': "))
+                if produto.vender(qtd_vendida):
+                    print(f"Venda registrada. Estoque atualizado para {produto.quantidade}.")
+                else:
+                    print(f"Erro: estoque insuficiente para '{nome_vendido}'.")
+                break
+        else:
+            print(f"Produto '{nome_vendido}' não encontrado.")
+    salvar_estoque(produtos)
+
+
+def mostrar_estoque(produtos):
+    print("\n--- Estoque Atualizado ---")
+    if not produtos:
+        print("Estoque vazio.")
+        return
+    for produto in produtos:
+        print(produto)
+
+
+def menu():
+    produtos = carregar_estoque()
+
+    while True:
+        print("\nMenu:")
+        print("1 - Cadastrar produtos")
+        print("2 - Registrar vendas")
+        print("3 - Mostrar estoque")
+        print("4 - Sair")
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            cadastrar_produtos(produtos)
+        elif opcao == "2":
+            registrar_vendas(produtos)
+        elif opcao == "3":
+            mostrar_estoque(produtos)
+        elif opcao == "4":
+            print("Saindo...")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+
+
+if __name__ == "__main__":
+    menu()
